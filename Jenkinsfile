@@ -8,7 +8,7 @@ pipeline {
         IMAGE_LATEST = "${IMAGE_NAME}:latest"
         DOCKER_CREDENTIALS = 'marius-dockerhub-credentials'
         SONARQUBE_TOKEN = 'sonarqube-token'
-        SONAR_HOST_URL = 'http://localhost:9000'
+        SONAR_HOST_URL = 'https://sonarqube.cicd.kits.ext.educentre.fr'
     }
 
     options {
@@ -68,21 +68,21 @@ pipeline {
             }
         }
 
-        stage('🔍 SonarQube Analysis') {
-            when {
-                expression { credentials(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN') != null }
-            }
+        stage('SonarQube Analysis') {
             steps {
-                echo '🔍 Analyse qualité du code avec SonarQube...'
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                echo '🔍 Analyse SonarQube...'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
-                        which sonar-scanner || npm install -g sonarqube-scanner
-                        sonar-scanner \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.projectKey=marius-tasklist-frontend \
+                        npx sonarqube-scanner \
+                            -Dsonar.host.url=https://sonarqube.cicd.kits.ext.educentre.fr \
+                            -Dsonar.token=${SONAR_TOKEN} \
+                            -Dsonar.projectKey=marius-tasklist-backend \
+                            -Dsonar.projectName=Marius-TaskList-Backend \
                             -Dsonar.sources=src \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info || echo "⚠️ SonarQube non disponible"
+                            -Dsonar.exclusions=src/__tests__/**,**/*.test.ts \
+                            -Dsonar.tests=src/__tests__ \
+                            -Dsonar.test.inclusions=**/*.test.ts \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info,coverage-e2e/lcov.info
                     '''
                 }
             }
