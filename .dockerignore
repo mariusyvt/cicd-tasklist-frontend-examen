@@ -10,5 +10,4 @@ README.md
 .DS_Store
 src/__tests__
 Jenkinsfile
-vite.config.ts
-tsconfig.json
+JENKINS-README.md
