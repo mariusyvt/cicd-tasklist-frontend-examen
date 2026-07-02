@@ -72,10 +72,10 @@ pipeline {
             steps {
                 echo '📋 Génération du SBOM au format SPDX...'
                 sh '''
-                    # Installer CycloneDX si nécessaire
+                    # Installer cyclonedx-npm si nécessaire
                     if ! command -v cyclonedx-npm > /dev/null 2>&1; then
                         echo "Installation de CycloneDX..."
-                        npm install -g @cyclonedx/npm
+                        npm install -g cyclonedx-npm
                     fi
                     
                     # Générer le SBOM en format SPDX JSON
