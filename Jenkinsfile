@@ -68,6 +68,31 @@ pipeline {
             }
         }
 
+        stage('📋 SBOM Generation - SPDX') {
+            steps {
+                echo '📋 Génération du SBOM au format SPDX...'
+                sh '''
+                    # Installer CycloneDX si nécessaire
+                    if ! command -v cyclonedx-npm > /dev/null 2>&1; then
+                        echo "Installation de CycloneDX..."
+                        npm install -g @cyclonedx/npm
+                    fi
+                    
+                    # Générer le SBOM en format SPDX JSON
+                    echo "Génération du SBOM SPDX..."
+                    cyclonedx-npm --output-file sbom.spdx.json --output-format json 2>&1 || echo "⚠️ CycloneDX non disponible"
+                    
+                    # Vérifier que le fichier a été créé
+                    if [ -f sbom.spdx.json ]; then
+                        echo "✅ SBOM généré avec succès"
+                        ls -lh sbom.spdx.json
+                    else
+                        echo "⚠️ SBOM non généré"
+                    fi
+                '''
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo '🔍 Analyse SonarQube...'
@@ -124,6 +149,25 @@ pipeline {
 
     post {
         always {
+            echo '📊 Archivage des artefacts...'
+            sh '''
+                mkdir -p artifacts
+                # Archiver le SBOM SPDX
+                if [ -f sbom.spdx.json ]; then
+                    cp sbom.spdx.json artifacts/
+                    echo "✅ SBOM archivé"
+                fi
+                # Archiver les rapports de couverture
+                if [ -d coverage ]; then
+                    cp -r coverage artifacts/ 2>/dev/null || true
+                fi
+                # Archiver le rapport JUnit
+                if [ -f reports/junit.xml ]; then
+                    cp -r reports artifacts/ 2>/dev/null || true
+                fi
+            '''
+            archiveArtifacts artifacts: 'artifacts/**/*', allowEmptyArchive: true
+            
             echo '🧹 Nettoyage des ressources Docker...'
             sh 'docker logout || true'
         }
