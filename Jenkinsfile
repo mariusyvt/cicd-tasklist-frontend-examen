@@ -101,8 +101,8 @@ pipeline {
                         npx sonarqube-scanner \
                             -Dsonar.host.url=https://sonarqube.cicd.kits.ext.educentre.fr \
                             -Dsonar.token=${SONAR_TOKEN} \
-                            -Dsonar.projectKey=marius-tasklist-backend \
-                            -Dsonar.projectName=Marius-TaskList-Backend \
+                            -Dsonar.projectKey=marius-tasklist-frontend \
+                            -Dsonar.projectName=Marius-TaskList-frontend \
                             -Dsonar.sources=src \
                             -Dsonar.exclusions=src/__tests__/**,**/*.test.ts \
                             -Dsonar.tests=src/__tests__ \
