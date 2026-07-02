@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "marius-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,13 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "docker:build": "docker build -t tasklist-frontend:latest .",
+    "docker:run": "docker run -d -p 80:80 --name tasklist-frontend tasklist-frontend:latest",
+    "docker:compose": "docker compose up --build",
+    "security:scan-trivy": "trivy image --severity CRITICAL,HIGH --format table tasklist-frontend:latest",
+    "security:sbom-spdx": "trivy image --format spdx-json --output sbom-spdx.json tasklist-frontend:latest",
+    "security:sbom-cyclonedx": "trivy image --format cyclonedx --output sbom-cyclonedx.json tasklist-frontend:latest"
   },
   "dependencies": {
     "@emnapi/core": "^1.11.1",
@@ -25,11 +31,13 @@
     "@types/node": "^26.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^6.0.2",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "happy-dom": "^20.10.6",
     "jsdom": "^29.1.1",
+    "sonarqube-scanner": "^4.3.8",
     "typescript": "~6.0.2",
-    "vite": "^8.0.12",
-    "vitest": "^4.1.9"
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
   }
 }

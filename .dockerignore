@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+dist
+coverage
+.git
+.gitignore
+.env
+.env.local
+README.md
+.DS_Store
+src/__tests__
+Jenkinsfile
+vite.config.ts
+tsconfig.json

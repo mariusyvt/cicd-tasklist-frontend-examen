@@ -27,6 +27,9 @@ dist-ssr
 coverage/
 reports/
 junit*.xml
+trivy-report.json
+sbom.spdx.json
+artifacts/
 
 # Environment variables
 .env
