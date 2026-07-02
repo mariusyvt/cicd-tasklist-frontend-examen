@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'master'
-    }
+    agent any
     
     environment {
         REGISTRY = 'docker.io'
@@ -18,7 +16,6 @@ pipeline {
         timeout(time: 45, unit: 'MINUTES')
         timestamps()
         quietPeriod(0)
-        disableConcurrentBuilds()
     }
 
     triggers {
