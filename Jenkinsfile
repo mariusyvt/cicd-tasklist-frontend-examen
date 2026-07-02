@@ -72,22 +72,21 @@ pipeline {
             steps {
                 echo '📋 Génération du SBOM au format SPDX...'
                 sh '''
-                    # Installer cyclonedx-npm si nécessaire
-                    if ! command -v cyclonedx-npm > /dev/null 2>&1; then
-                        echo "Installation de CycloneDX..."
-                        npm install -g cyclonedx-npm
-                    fi
+                    # Vérifier la version de npm
+                    echo "npm version: $(npm --version)"
                     
-                    # Générer le SBOM en format SPDX JSON
-                    echo "Génération du SBOM SPDX..."
-                    cyclonedx-npm --output-file sbom.spdx.json --output-format json 2>&1 || echo "⚠️ CycloneDX non disponible"
+                    # Générer le SBOM au format SPDX (CycloneDX) avec npm natif
+                    npm sbom --sbom-format=cyclonedx --sbom-type=library > sbom.spdx.json 2>&1 || \
+                    npm sbom > sbom.spdx.json 2>&1 || \
+                    echo "⚠️ SBOM non généré (npm < 16.19.0 ou npm sbom non supporté)"
                     
                     # Vérifier que le fichier a été créé
-                    if [ -f sbom.spdx.json ]; then
+                    if [ -f sbom.spdx.json ] && [ -s sbom.spdx.json ]; then
                         echo "✅ SBOM généré avec succès"
                         ls -lh sbom.spdx.json
+                        head -20 sbom.spdx.json
                     else
-                        echo "⚠️ SBOM non généré"
+                        echo "⚠️ SBOM non généré - npm sbom peut nécessiter npm >= 16.19.0"
                     fi
                 '''
             }
