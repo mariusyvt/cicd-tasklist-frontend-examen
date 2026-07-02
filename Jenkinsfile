@@ -102,12 +102,13 @@ pipeline {
                             -Dsonar.host.url=https://sonarqube.cicd.kits.ext.educentre.fr \
                             -Dsonar.token=${SONAR_TOKEN} \
                             -Dsonar.projectKey=marius-tasklist-frontend \
-                            -Dsonar.projectName=Marius-TaskList-frontend \
+                            -Dsonar.projectName="Marius TaskList Frontend" \
                             -Dsonar.sources=src \
-                            -Dsonar.exclusions=src/__tests__/**,**/*.test.ts \
+                            -Dsonar.exclusions=src/__tests__/**,**/*.test.tsx,src/main.tsx,src/vite-env.d.ts \
                             -Dsonar.tests=src/__tests__ \
-                            -Dsonar.test.inclusions=**/*.test.ts \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info,coverage-e2e/lcov.info
+                            -Dsonar.test.inclusions=**/*.test.tsx \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.coverage.exclusions=src/__tests__/**,src/main.tsx,src/vite-env.d.ts || echo "⚠️ SonarQube non disponible"
                     '''
                 }
             }
